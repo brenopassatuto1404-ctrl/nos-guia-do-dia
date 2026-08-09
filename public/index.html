@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+  <html lang="pt-BR">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nos - Guia do Dia</title>
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Caprasimo:wght@400&family=Figtree:wght@400;600;700&display=swap');
+
+:root {
+  --color-bg:#f5ead8; --color-surface:#ebddc5; --color-text:#201e1d;
+  --color-divider: color-mix(in srgb, #201e1d 14%, transparent);
+--color-neutral-100:#f9f4ed; --color-neutral-200:#eee7db; --color-neutral-300:#dcd3c4;
+  --color-neutral-600:#82796a; --color-neutral-700:#645c50; --color-neutral-800:#474238;
+--color-accent-100:#fff2eb; --color-accent-200:#ffe1d0; --color-accent-300:#ffc6a5;
+  --color-accent-600:#b2622d; --color-accent-700:#8c491a; --color-accent-800:#643312;
+  --color-accent-2-100:#f0fae1; --color-accent-2-300:#ccdbb2; --color-accent-2-500:#8fa073;
+  --color-accent-2-600:#728157; --color-accent-2-700:#56633f; --color-accent-2-800:#3d472b;
+--font-heading:"Caprasimo", system-ui, sans-serif;
+--font-body:"Figtree", system-ui, sans-serif;
+--shadow-sm: 0 1px 2px color-mix(in srgb, #2e2b25 14%, transparent);
+--shadow-md: 0 3px 10px color-mix(in srgb, #2e2b25 16%, transparent);
+--bg:var(--color-bg); --card:var(--color-surface); --ink:var(--color-text);
+--muted: color-mix(in srgb, var(--color-text) 55%, transparent);
+--line:var(--color-divider);
+--accent:var(--color-accent-2-700);
+--accent2:var(--color-accent-700);
+--B:var(--color-accent-600);
+--C:var(--color-accent-2-600);
+--BC: color-mix(in srgb, var(--color-accent-600) 50%, var(--color-accent-2-600) 50%);
+--A:var(--color-neutral-700);
+--manha:var(--color-accent-300);
+--tarde:var(--color-accent-600);
+--noite:var(--color-accent-2-800);
+--ok:#4f8a5a; --off:#a34b3f;
+  }
+* { box-sizing: border-box; }
+body { margin:0; font-family:var(--font-body); background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; }
+.wrap { max-width:680px; margin:0 auto; padding:16px 14px 60px; }
+header { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; }
+.nav { background:var(--card); border:1px solid var(--line); border-radius:999px; width:38px; height:38px; font-size:18px; cursor:pointer; color:var(--ink); box-shadow:var(--shadow-sm); }
+.datebox { text-align:center; flex:1; }
+.dow { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; font-weight:700; }
+.date { font-family:var(--font-heading); font-weight:400; font-size:24px; margin-top:3px; letter-spacing:-0.01em; }
+.badge-day { display:inline-block; margin-top:7px; font-size:12px; padding:3px 12px; border-radius:999px; font-weight:700; }
+.wd { background:var(--color-accent-2-100); color:var(--accent); }
+.sat { background:var(--color-accent-100); color:var(--accent2); }
+.sun { background:var(--color-neutral-200); color:var(--BC); }
+.toprow { display:flex; align-items:center; justify-content:center; gap:10px; margin:10px 0 18px; }
+.today-btn { background:none; border:none; color:var(--accent2); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+.sync { display:inline-flex; align-items:center; gap:5px; font-size:11px; color:var(--muted); font-weight:600; }
+.sync .dot { width:7px; height:7px; border-radius:50%; background:var(--ok); }
+.sync.off .dot { background:var(--off); }
+.block { background:var(--card); border:1px solid var(--line); border-radius:calc(28px * 1.15); padding:14px 14px 6px; margin-bottom:14px; box-shadow:var(--shadow-sm); }
+.bh { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.dot-lg { width:12px; height:12px; border-radius:50%; }
+.bh h2 { font-family:var(--font-heading); font-weight:400; font-size:17px; margin:0; }
+.ctx { font-size:12.5px; color:var(--muted); margin:2px 0 10px; line-height:1.5; }
+.task { display:flex; align-items:center; gap:10px; padding:9px 4px; border-top:1px solid var(--line); }
+.task:first-of-type { border-top:none; }
+.chk { width:24px; height:24px; border-radius:50%; border:2px solid var(--line); flex:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:13px; color:#fff; background:var(--card); transition:.15s; }
+.chk.on { background:var(--color-accent-2-500); border-color:var(--color-accent-2-500); }
+.tinfo { flex:1; min-width:0; }
+.tname { font-size:14.5px; line-height:1.25; font-weight:600; }
+.task.done .tname { text-decoration:line-through; color:var(--muted); font-weight:600; }
+.tmeta { font-size:11.5px; color:var(--muted); margin-top:2px; }
+.time { font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums; }
+.resp { flex:none; width:30px; height:30px; border-radius:50%; color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; cursor:pointer; border:none; }
+.rB { background:var(--B); } .rC { background:var(--C); } .rBC { background:var(--BC); font-size:10px; } .rA { background:var(--A); }
+.section-title { font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin:24px 4px 8px; }
+.foco { background:linear-gradient(180deg,color-mix(in srgb, var(--card) 60%, #fff),var(--card)); border:1px solid var(--line); border-left:4px solid var(--accent2); border-radius:20px; padding:6px 14px; box-shadow:var(--shadow-sm); }
+  .freqtag { display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:999px; background:var(--color-neutral-200); color:var(--color-neutral-800); margin-right:6px; vertical-align:middle; }
+.empty { padding:18px 8px; text-align:center; color:var(--muted); font-size:14px; }
+.balance { display:flex; gap:10px; margin:6px 0 0; }
+.bcard { flex:1; background:var(--card); border:1px solid var(--line); border-radius:calc(28px * 1.15); padding:12px; text-align:center; box-shadow:var(--shadow-sm); }
+.bcard .n { font-family:var(--font-heading); font-weight:400; font-size:26px; }
+.bcard .l { font-size:12px; color:var(--muted); margin-top:2px; }
+details { background:var(--card); border:1px solid var(--line); border-radius:calc(28px * 1.15); padding:4px 14px; margin-top:14px; box-shadow:var(--shadow-sm); }
+summary { cursor:pointer; font-weight:700; font-size:14px; padding:10px 0; }
+.lp { font-size:13px; padding:8px 0; border-top:1px solid var(--line); color:var(--ink); }
+.lp small { color:var(--muted); }
+.foot { text-align:center; font-size:11px; color:var(--muted); margin-top:18px; line-height:1.6; }
+</style>
+  </head>
+  <body>
+  <div class="wrap">
+
+  <header>
+  <button class="nav" onclick="go(-1)">&lsaquo;</button>
+  <div class="datebox">
+  <div class="dow" id="dow"></div>
+  <div class="date" id="date"></div>
+  <div class="badge-day" id="daybadge"></div>
+  </div>
+  <button class="nav" onclick="go(1)">&rsaquo;</button>
+  </header>
+  <div class="toprow">
+  <button class="today-btn" onclick="today()">voltar para hoje</button>
+<span class="sync" id="syncbadge"><span class="dot"></span><span id="syncmsg">sincronizado</span></span>
+  </div>
+
+  <div id="blocks"></div>
+
+  <div class="section-title">Foco de hoje</div>
+<div class="foco" id="foco"></div>
+
+  <div class="section-title">Equilibrio do dia</div>
+  <div class="balance">
+  <div class="bcard"><div class="n" id="cntB" style="color:var(--B)">0</div><div class="l">Breno</div></div>
+  <div class="bcard"><div class="n" id="cntC" style="color:var(--C)">0</div><div class="l">Carol</div></div>
+  <div class="bcard"><div class="n" id="cntT">0</div><div class="l">Total feito</div></div>
+  </div>
+
+  <details id="lpbox">
+  <summary>Lembretes de longo prazo (trimestral / anual)</summary>
+  <div id="lp"></div>
+  </details>
+
+  <div class="foot">
+  Responsavel e sugestao - toque na bolinha (B / C / os dois) pra mudar.<br>
+  As marcacoes sincronizam entre os celulares em poucos segundos.
+</div>
+</div>
+
+<script>
+  const TASKS = [
+{ "id": 1, "categoria": "Casa geral", "tarefa": "Arrumar a cama", "frequencia": "Diaria", "quando": "07:00", "responsavel_sugerido": "B", "obs": "", "periodo": "manha", "sched": {"tipo":"daily"} },
+  { "id": 2, "categoria": "Cozinha", "tarefa": "Fazer o cafe", "frequencia": "Diaria", "quando": "07:00", "responsavel_sugerido": "C", "obs": "", "periodo": "manha", "sched": {"tipo":"daily"} },
+{ "id": 3, "categoria": "Pets - Alimentacao", "tarefa": "Gatos - refeicao 1", "frequencia": "Diaria", "quando": "07:00", "responsavel_sugerido": "C", "obs": "1a de 4", "periodo": "manha", "sched": {"tipo":"daily"} },
+{ "id": 4, "categoria": "Pets - Alimentacao", "tarefa": "Cachorras - refeicao 1", "frequencia": "Diaria", "quando": "07:15", "responsavel_sugerido": "C", "obs": "1a de 2", "periodo": "manha", "sched": {"tipo":"daily"} },
+{ "id": 5, "categoria": "Pets - Alimentacao", "tarefa": "Gatos - refeicao 2", "frequencia": "Diaria", "quando": "12:00", "responsavel_sugerido": "B", "obs": "Breno em casa", "periodo": "tarde", "sched": {"tipo":"daily"} },
+{ "id": 6, "categoria": "Pets - Alimentacao", "tarefa": "Gatos - refeicao 3", "frequencia": "Diaria", "quando": "17:00", "responsavel_sugerido": "B", "obs": "", "periodo": "tarde", "sched": {"tipo":"daily"} },
+{ "id": 7, "categoria": "Pets - Alimentacao", "tarefa": "Cachorras - refeicao 2", "frequencia": "Diaria", "quando": "18:00", "responsavel_sugerido": "C", "obs": "", "periodo": "noite", "sched": {"tipo":"daily"} },
+{ "id": 8, "categoria": "Pets - Alimentacao", "tarefa": "Gatos - refeicao 4", "frequencia": "Diaria", "quando": "22:00", "responsavel_sugerido": "C", "obs": "", "periodo": "noite", "sched": {"tipo":"daily"} },
+{ "id": 9, "categoria": "Pets - Higiene", "tarefa": "Agua fresca dos pets", "frequencia": "Diaria", "quando": "Manha", "responsavel_sugerido": "BC", "obs": "Trocar de todos", "periodo": "manha", "sched": {"tipo":"daily"} },
+{ "id": 10, "categoria": "Pets - Higiene", "tarefa": "Lavar comedouros/bebedouros", "frequencia": "Diaria", "quando": "Noite", "responsavel_sugerido": "C", "obs": "Higiene dos potes", "periodo": "noite", "sched": {"tipo":"daily"} },
+{ "id": 11, "categoria": "Pets - Higiene", "tarefa": "Peneirar caixa de areia", "frequencia": "Diaria", "quando": "Manha/Noite", "responsavel_sugerido": "C", "obs": "Retirar dejetos", "periodo": "manha", "sched": {"tipo":"daily"} },
+{ "id": 12, "categoria": "Pets - Higiene", "tarefa": "Passeio / xixi das cachorras", "frequencia": "Diaria", "quando": "Manha e noite", "responsavel_sugerido": "B", "obs": "", "periodo": "manha", "sched": {"tipo":"daily"} },
+{ "id": 13, "categoria": "Pets - Higiene", "tarefa": "Recolher xixi/fezes internos", "frequencia": "Diaria", "quando": "Conforme", "responsavel_sugerido": "BC", "obs": "Tapete higienico", "periodo": "tarde", "sched": {"tipo":"daily"} },
+{ "id": 14, "categoria": "Cozinha", "tarefa": "Lavar a louca", "frequencia": "Diaria", "quando": "Apos refeicoes", "responsavel_sugerido": "BC", "obs": "", "periodo": "noite", "sched": {"tipo":"daily"} },
+{ "id": 15, "categoria": "Cozinha", "tarefa": "Limpar pia e bancada", "frequencia": "Diaria", "quando": "Noite", "responsavel_sugerido": "BC", "obs": "", "periodo": "noite", "sched": {"tipo":"daily"} },
+{ "id": 16, "categoria": "Cozinha", "tarefa": "Passar pano na mesa", "frequencia": "Diaria", "quando": "Apos refeicoes", "responsavel_sugerido": "BC", "obs": "", "periodo": "noite", "sched": {"tipo":"daily"} },
+{ "id": 17, "categoria": "Lixo", "tarefa": "Tirar o lixo", "frequencia": "Diaria", "quando": "Noite", "responsavel_sugerido": "B", "obs": "", "periodo": "noite", "sched": {"tipo":"daily"} },
+{ "id": 18, "categoria": "Chao e Aspiracao", "tarefa": "Aspiracao rapida de pelos", "frequencia": "Diaria", "quando": "Noite", "responsavel_sugerido": "BC", "obs": "6 pets soltam muito pelo", "periodo": "noite", "sched": {"tipo":"daily"} },
+{ "id": 19, "categoria": "Casa geral", "tarefa": "Arrumacao geral", "frequencia": "Diaria", "quando": "18:00", "responsavel_sugerido": "BC", "obs": "Quando Carol chega", "periodo": "noite", "sched": {"tipo":"daily"} },
+{ "id": 20, "categoria": "Cozinha", "tarefa": "Organizar/esquentar marmita", "frequencia": "Diaria", "quando": "Noite", "responsavel_sugerido": "BC", "obs": "", "periodo": "noite", "sched": {"tipo":"daily"} },
+{ "id": 21, "categoria": "Roupas", "tarefa": "Separar roupa suja (cor/tipo)", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"weekly","dow":1} },
+{ "id": 22, "categoria": "Roupas", "tarefa": "Lavar roupa (cargas da semana)", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "Geralmente 2-3 cargas", "sched": {"tipo":"weekly","dow":1} },
+{ "id": 23, "categoria": "Roupas", "tarefa": "Roupa de crossfit/academia", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "Lava mais vezes - suor", "sched": {"tipo":"weekly","dow":4} },
+{ "id": 24, "categoria": "Roupas", "tarefa": "Estender / secadora", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"weekly","dow":1} },
+{ "id": 25, "categoria": "Roupas", "tarefa": "Dobrar e guardar", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"weekly","dow":1} },
+{ "id": 26, "categoria": "Roupas", "tarefa": "Passar roupa", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "C", "obs": "Roupa de escritorio", "sched": {"tipo":"weekly","dow":6} },
+{ "id": 27, "categoria": "Roupas", "tarefa": "Lavar toalhas de banho", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"weekly","dow":4} },
+{ "id": 28, "categoria": "Chao e Aspiracao", "tarefa": "Aspirar a casa a fundo", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "Debaixo de moveis", "sched": {"tipo":"weekly","dow":6} },
+{ "id": 29, "categoria": "Chao e Aspiracao", "tarefa": "Passar mop no chao", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"weekly","dow":6} },
+{ "id": 30, "categoria": "Chao e Aspiracao", "tarefa": "Lavar e secar o mop", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "Se nao seca, cheira mal", "sched": {"tipo":"weekly","dow":6} },
+{ "id": 31, "categoria": "Banheiro", "tarefa": "Limpeza rapida do banheiro", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "Vaso, pia, box", "sched": {"tipo":"weekly","dow":3} },
+{ "id": 32, "categoria": "Cozinha", "tarefa": "Limpar fogao/cooktop", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"weekly","dow":6} },
+{ "id": 33, "categoria": "Cozinha", "tarefa": "Limpar micro-ondas", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"weekly","dow":6} },
+{ "id": 34, "categoria": "Cozinha", "tarefa": "Trocar esponja/pano de prato", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "C", "obs": "Higiene", "sched": {"tipo":"weekly","dow":1} },
+{ "id": 35, "categoria": "Pets - Higiene", "tarefa": "Escovar os pets", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "Controle de pelo", "sched": {"tipo":"weekly","dow":0} },
+{ "id": 36, "categoria": "Pets - Higiene", "tarefa": "Lavar caixas de areia a fundo", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "C", "obs": "", "sched": {"tipo":"weekly","dow":6} },
+{ "id": 37, "categoria": "Casa geral", "tarefa": "Regar plantas", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "Se houver / ajustar", "sched": {"tipo":"weekly","dow":3} },
+{ "id": 38, "categoria": "Compras e Admin", "tarefa": "Repor itens que acabaram", "frequencia": "Semanal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"weekly","dow":5} },
+{ "id": 39, "categoria": "Faxina", "tarefa": "Faxina pesada (Aline)", "frequencia": "Quinzenal", "quando": "A cada 15 dias", "responsavel_sugerido": "A", "obs": "Faxina completa", "sched": {"tipo":"quinz","dow":5,"parity":0} },
+{ "id": 40, "categoria": "Faxina", "tarefa": "Preparar casa p/ faxina", "frequencia": "Quinzenal", "quando": "Vespera", "responsavel_sugerido": "BC", "obs": "Tirar coisas do chao", "sched": {"tipo":"quinz","dow":4,"parity":0} },
+{ "id": 41, "categoria": "Roupas", "tarefa": "Trocar roupa de cama", "frequencia": "Quinzenal", "quando": "-", "responsavel_sugerido": "C", "obs": "", "sched": {"tipo":"quinz","dow":0,"parity":0} },
+{ "id": 42, "categoria": "Pets - Higiene", "tarefa": "Lavar caminha/tapetes dos pets", "frequencia": "Quinzenal", "quando": "-", "responsavel_sugerido": "B", "obs": "", "sched": {"tipo":"quinz","dow":6,"parity":1} },
+{ "id": 43, "categoria": "Compras e Admin", "tarefa": "Compras maiores / feira", "frequencia": "Quinzenal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"quinz","dow":6,"parity":0} },
+{ "id": 44, "categoria": "Cozinha", "tarefa": "Limpeza rapida da geladeira", "frequencia": "Quinzenal", "quando": "-", "responsavel_sugerido": "C", "obs": "Descartar vencidos", "sched": {"tipo":"quinz","dow":0,"parity":1} },
+{ "id": 45, "categoria": "Casa geral", "tarefa": "Limpar espelhos e vidros", "frequencia": "Quinzenal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"quinz","dow":6,"parity":1} },
+{ "id": 46, "categoria": "Chao e Aspiracao", "tarefa": "Manutencao do aspirador", "frequencia": "Quinzenal", "quando": "-", "responsavel_sugerido": "B", "obs": "Filtro, escova, reservatorio", "sched": {"tipo":"quinz","dow":6,"parity":0} },
+{ "id": 47, "categoria": "Pets - Saude", "tarefa": "Antipulgas / vermifugo", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "C", "obs": "Checar data de cada bicho", "sched": {"tipo":"monthly","dow":0,"week":1} },
+{ "id": 48, "categoria": "Pets - Higiene", "tarefa": "Banho nas cachorras", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "B", "obs": "", "sched": {"tipo":"monthly","dow":6,"week":2} },
+{ "id": 49, "categoria": "Pets - Higiene", "tarefa": "Cortar unhas dos pets", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"monthly","dow":0,"week":2} },
+{ "id": 50, "categoria": "Pets - Higiene", "tarefa": "Troca total da areia", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "C", "obs": "Lavar as caixas", "sched": {"tipo":"monthly","dow":6,"week":3} },
+{ "id": 51, "categoria": "Compras e Admin", "tarefa": "Comprar estoque de racao", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "B", "obs": "Gatos + cachorras", "sched": {"tipo":"monthly","dow":6,"week":1} },
+{ "id": 52, "categoria": "Compras e Admin", "tarefa": "Estoque de produtos de limpeza/higiene", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"monthly","dow":6,"week":1} },
+{ "id": 53, "categoria": "Compras e Admin", "tarefa": "Pagar contas do mes", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "B", "obs": "", "sched": {"tipo":"monthly","dom":5} },
+{ "id": 54, "categoria": "Cozinha", "tarefa": "Limpeza pesada geladeira/despensa", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"monthly","dow":6,"week":4} },
+{ "id": 55, "categoria": "Cozinha", "tarefa": "Conferir validades da despensa", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "C", "obs": "", "sched": {"tipo":"monthly","dow":0,"week":4} },
+{ "id": 56, "categoria": "Manutencao", "tarefa": "Limpar filtros/ventilador/ar", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "B", "obs": "", "sched": {"tipo":"monthly","dow":6,"week":3} },
+{ "id": 57, "categoria": "Manutencao", "tarefa": "Ciclo de limpeza da maquina de lavar", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "B", "obs": "Evita cheiro/mofo", "sched": {"tipo":"monthly","dow":6,"week":2} },
+{ "id": 58, "categoria": "Lixo", "tarefa": "Lavar as lixeiras", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "B", "obs": "", "sched": {"tipo":"monthly","dow":6,"week":3} },
+{ "id": 59, "categoria": "Roupas", "tarefa": "Lavar edredom / cobertas", "frequencia": "Mensal", "quando": "-", "responsavel_sugerido": "C", "obs": "", "sched": {"tipo":"monthly","dow":6,"week":4} },
+{ "id": 60, "categoria": "Manutencao", "tarefa": "Higienizacao a fundo do ar-condicionado", "frequencia": "Trimestral", "quando": "-", "responsavel_sugerido": "B", "obs": "", "sched": {"tipo":"longo","dica":"Trimestral - jan/abr/jul/out"} },
+{ "id": 61, "categoria": "Manutencao", "tarefa": "Virar e aspirar o colchao", "frequencia": "Trimestral", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"longo","dica":"Trimestral - fev/mai/ago/nov"} },
+{ "id": 62, "categoria": "Manutencao", "tarefa": "Limpar atras/embaixo dos moveis e geladeira", "frequencia": "Trimestral", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"longo","dica":"Trimestral - mar/jun/set/dez"} },
+{ "id": 63, "categoria": "Manutencao", "tarefa": "Limpar ralos com produto", "frequencia": "Trimestral", "quando": "-", "responsavel_sugerido": "B", "obs": "", "sched": {"tipo":"longo","dica":"Trimestral - jan/abr/jul/out"} },
+{ "id": 64, "categoria": "Casa geral", "tarefa": "Organizar armarios / desapego", "frequencia": "Trimestral", "quando": "-", "responsavel_sugerido": "BC", "obs": "", "sched": {"tipo":"longo","dica":"Trimestral - mar/jun/set/dez"} },
+{ "id": 65, "categoria": "Pets - Saude", "tarefa": "Check-up / vet dos pets", "frequencia": "Trimestral", "quando": "-", "responsavel_sugerido": "C", "obs": "Conforme orientacao", "sched": {"tipo":"longo","dica":"Trimestral - conforme vet"} },
+{ "id": 66, "categoria": "Pets - Saude", "tarefa": "Vacinas anuais dos pets", "frequencia": "Anual", "quando": "-", "responsavel_sugerido": "C", "obs": "Raiva, V10, V4 etc.", "sched": {"tipo":"longo","dica":"Anual - conforme carteirinha"} },
+{ "id": 67, "categoria": "Manutencao", "tarefa": "Dedetizacao preventiva", "frequencia": "Anual", "quando": "-", "responsavel_sugerido": "B", "obs": "", "sched": {"tipo":"longo","dica":"Anual - sugestao: marco"} },
+{ "id": 68, "categoria": "Manutencao", "tarefa": "Revisar extintor / detector de fumaca", "frequencia": "Anual", "quando": "-", "responsavel_sugerido": "B", "obs": "", "sched": {"tipo":"longo","dica":"Anual - sugestao: janeiro"} },
+{ "id": 69, "categoria": "Roupas", "tarefa": "Trocar roupas de estacao", "frequencia": "Anual", "quando": "2x/ano", "responsavel_sugerido": "BC", "obs": "Guardar/tirar do armario", "sched": {"tipo":"longo","dica":"2x/ano - abril e outubro"} }
+];
+
+let cur = new Date(); cur.setHours(0,0,0,0);
+let SERVER = { resp: {}, done: {} };
+
+function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function weekOfMonth(d){return Math.ceil(d.getDate()/7);}
+function isoWeek(d){const t=new Date(d);t.setHours(0,0,0,0);t.setDate(t.getDate()+3-((t.getDay()+6)%7));const w1=new Date(t.getFullYear(),0,4);return 1+Math.round(((t-w1)/86400000-3+((w1.getDay()+6)%7))/7);}
+
+function respOf(t){ return SERVER.resp[t.id] || t.responsavel_sugerido; }
+function doneKeyOf(t,d){ return ymd(d)+":"+t.id; }
+function isDone(t,d){ return SERVER.done[doneKeyOf(t,d)] || null; }
+
+function setSync(ok){
+  const el = document.getElementById("syncbadge");
+const msg = document.getElementById("syncmsg");
+el.className = "sync" + (ok ? "" : " off");
+msg.textContent = ok ? "sincronizado" : "sem conexao";
+}
+
+async function refreshState(){
+try{
+const res = await fetch("/api/state");
+if(!res.ok) throw new Error("bad response");
+SERVER = await res.json();
+setSync(true);
+render();
+}catch(e){
+setSync(false);
+}
+}
+
+async function setResp(t){
+try{
+const res = await fetch("/api/resp", {
+  method:"POST", headers:{"Content-Type":"application/json"},
+  body: JSON.stringify({ taskId: t.id, defaultResp: t.responsavel_sugerido })
+  });
+SERVER = await res.json();
+setSync(true);
+render();
+}catch(e){ setSync(false); }
+}
+
+async function toggle(t,d){
+try{
+const res = await fetch("/api/toggle", {
+  method:"POST", headers:{"Content-Type":"application/json"},
+  body: JSON.stringify({ taskId: t.id, date: ymd(d), defaultResp: t.responsavel_sugerido })
+  });
+SERVER = await res.json();
+setSync(true);
+render();
+}catch(e){ setSync(false); }
+}
+
+function matchesDay(t,d){
+  const s=t.sched,wd=d.getDay();
+if(s.tipo==="daily")return true;
+if(s.tipo==="weekly")return s.dow===wd;
+if(s.tipo==="quinz")return s.dow===wd && (isoWeek(d)%2)===s.parity;
+if(s.tipo==="monthly"){
+if("dom" in s)return d.getDate()===s.dom;
+return s.dow===wd && weekOfMonth(d)===s.week;
+}
+return false;
+}
+
+function respBtn(t){const r=respOf(t);return "<button class=\"resp r"+r+"\" onclick=\"setResp(TASKS.find(x=>x.id==="+t.id+"))\">"+(r==="BC"?"B+C":r)+"</button>";}
+
+function taskRow(t,d,showFreq){
+  const done=isDone(t,d);
+const meta=[];
+if(showFreq)meta.push("<span class=\"freqtag\">"+t.frequencia+"</span>");
+let sub=t.obs||"";
+const time=(t.quando&&t.quando!=="-")?"<span class=\"time\">"+t.quando+"</span>":"";
+return "<div class=\"task "+(done?'done':'')+"\">"
+  +"<div class=\"chk "+(done?'on':'')+"\" onclick=\"toggle(TASKS.find(x=>x.id==="+t.id+"),cur)\">"+(done?'&#10003;':'')+"</div>"
+  +"<div class=\"tinfo\"><div class=\"tname\">"+t.tarefa+"</div>"
+  +"<div class=\"tmeta\">"+meta.join('')+(sub?"<span>"+sub+"</span>":'')+"</div></div>"
+  +time+respBtn(t)
+  +"</div>";
+}
+
+const CTX = {
+weekday:{
+manha:"07h acordar - Breno arruma a cama, Carol faz o cafe - 08-09h trabalho (os dois) - 09h Carol vai ao escritorio",
+  tarde:"11:30 CrossFit - 14h almoco na vo do Breno - Carol volta ao escritorio - Breno no 2o bloco de trabalho",
+  noite:"18h Carol chega - arrumar a casa juntos - jantar de marmita"
+  },
+  sat:{manha:"Sabado sem rotina de trabalho - CrossFit se rolar - cafe com calma",
+    tarde:"Dia de tarefas pesadas da casa - hora de zerar o que ficou",
+    noite:"Fechar a casa arrumada pro domingo - jantar tranquilo"},
+    sun:{manha:"Domingo leve - sem trabalho - aproveitar o cafe",
+      tarde:"Descanso - so o essencial dos pets e da cozinha",
+      noite:"Preparar o clima pra semana - jantar tranquilo"}
+};
+
+function render(){
+  const d=cur, wd=d.getDay();
+const dias=["domingo","segunda-feira","terca-feira","quarta-feira","quinta-feira","sexta-feira","sabado"];
+document.getElementById("dow").textContent=dias[wd];
+document.getElementById("date").textContent=d.getDate()+" de "+["janeiro","fevereiro","marco","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"][d.getMonth()];
+const bd=document.getElementById("daybadge");
+let ctx;
+if(wd===6){bd.textContent="Sabado - dia pesado";bd.className="badge-day sat";ctx=CTX.sat;}
+else if(wd===0){bd.textContent="Domingo - dia leve";bd.className="badge-day sun";ctx=CTX.sun;}
+else{bd.textContent="Dia util";bd.className="badge-day wd";ctx=CTX.weekday;}
+
+const dailyByP={manha:[],tarde:[],noite:[]};
+TASKS.filter(t=>t.sched.tipo==="daily").forEach(t=>dailyByP[t.periodo].push(t));
+const blockDefs=[["manha","Manha","var(--manha)"],["tarde","Tarde","var(--tarde)"],["noite","Noite","var(--noite)"]];
+let bh="";
+blockDefs.forEach(function(def){
+  const k=def[0],label=def[1],color=def[2];
+  bh+="<div class=\"block\"><div class=\"bh\"><span class=\"dot-lg\" style=\"background:"+color+"\"></span><h2>"+label+"</h2></div>";
+bh+="<div class=\"ctx\">"+ctx[k]+"</div>";
+dailyByP[k].forEach(function(t){bh+=taskRow(t,d,false);});
+bh+="</div>";
+});
+document.getElementById("blocks").innerHTML=bh;
+
+const foco=TASKS.filter(t=>t.sched.tipo!=="daily"&&t.sched.tipo!=="longo"&&matchesDay(t,d));
+const fEl=document.getElementById("foco");
+if(foco.length===0){
+fEl.innerHTML="<div class=\"empty\">"+(wd===0?"Domingo e dia de descanso. So o essencial hoje.":"Nada extra hoje alem da rotina!")+"</div>";
+}else{
+foco.sort(function(a,b){return a.frequencia.localeCompare(b.frequencia);});
+fEl.innerHTML=foco.map(function(t){return taskRow(t,d,true);}).join("");
+}
+
+let cB=0,cC=0,tot=0;
+const allToday=TASKS.filter(t=>matchesDay(t,d));
+allToday.forEach(function(t){const entry=isDone(t,d);if(entry){tot++;if(entry.by==="B")cB++;else if(entry.by==="C")cC++;else if(entry.by==="BC"){cB++;cC++;}}});
+document.getElementById("cntB").textContent=cB;
+document.getElementById("cntC").textContent=cC;
+document.getElementById("cntT").textContent=tot;
+
+document.getElementById("lp").innerHTML=TASKS.filter(t=>t.sched.tipo==="longo")
+.map(function(t){return "<div class=\"lp\">"+t.tarefa+" <small>- "+t.sched.dica+"</small></div>";}).join("");
+}
+
+function go(n){cur.setDate(cur.getDate()+n);render();}
+function today(){cur=new Date();cur.setHours(0,0,0,0);render();}
+
+refreshState();
+setInterval(function(){refreshState();}, 4000);
+document.addEventListener("visibilitychange", function(){ if(!document.hidden) refreshState(); });
+</script>
+</body>
+</html>
